@@ -1,0 +1,58 @@
+from grovepi import *
+import time
+import requests
+import sys
+from grove_rgb_lcd import *
+
+# Connect the Grove Ultrasonic Ranger to digital port D4
+# SIG,NC,VCC,GND
+
+ultrasonic_ranger = 4
+Relay_pin = 2
+LED = 5
+GLED = 6
+CAR_HEIGHT = ultrasonicRead(ultrasonic_ranger)
+dec = False
+a = []
+lad = 0
+longe = 0
+
+url = "http://10.10.89.56:3000/dht"
+
+pinMode(Relay_pin,"OUTPUT")
+pinMode(LED, "output")
+pinMode(GLED, "output")
+
+while True:
+    try:
+
+        
+        # Read distance value from Ultrasonic
+        distant = ultrasonicRead(ultrasonic_ranger)
+        print(distant,'cm')
+        if CAR_HEIGHT / 3 + CAR_HEIGHT <= distant:
+            if(dec == False):
+                dec = True
+                a = []
+            digitalWrite(LED, 1)
+            digitalWrite(GLED, 0)
+            a.append(distant)
+            print(a)
+        else:
+            if(dec == True):
+                dec == False
+                payload = { 'lad' : lad, 'long' : longe, 'hole' : a}
+                requests.post(url, data=payload)
+                
+            dec = False
+            digitalWrite(LED, 0)
+            digitalWrite(GLED, 1)
+        if distant <= 10:
+            digitalWrite(Relay_pin,1)
+        else:
+            digitalWrite(Relay_pin,0)
+
+    except TypeError:
+        print("Error")
+    except IOError:
+        print("Error")
