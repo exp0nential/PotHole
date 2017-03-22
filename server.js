@@ -7,19 +7,20 @@ var app = express();
 var server = http.createServer(app);
 var io = socketio(server);
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+
+app.use('/', express.static('../WebClient/'));
+
+
 app.post('/echo', function(req, res) {
     console.log('post /echo =' + JSON.stringify(req.body));
     io.sockets.emit('echo', req.body);
     res.status(201).send(req.body);
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
-app.get('/', function (req, res) {
-    res.send('We are Eating!!!!')
-});
 app.post('/dht', function (req, res) {
     console.log('post / = ' + JSON.stringify(req.body));
     res.status(200).send('got it');
