@@ -10,7 +10,7 @@ var io = socketio(server);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use('/', express.static('../WebClient/'));
+app.use('/', express.static('WebClient/'));
 
 
 app.post('/', function (req, res) {
